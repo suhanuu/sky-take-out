@@ -104,6 +104,23 @@ public class EmployeeController {
 
     }
 
+    /**
+     * 设置员工的启用禁用状态
+     * @param status
+     * @param id
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    @ApiOperation("设置员工的启用禁用状态")
+    public Result startOrStop(@PathVariable Integer status, Long id) {
+        log.info("员工状态：{}，员工id：{}", status, id);
+        employeeService.startOrStop(status, id);
+        return Result.success();
+    }
+
+
+
+
 
 
 }
