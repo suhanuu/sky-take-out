@@ -79,19 +79,19 @@ public class EmployeeServiceImpl implements EmployeeService {
         //设置默认密码 md5加密
         employee.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
 
-        //设置创建时间和更新时间
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        //设置创建时间和更新时间
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
 
         //设置账号状态 1:正常  0:停用
         employee.setStatus(StatusConstant.ENABLE);
 
-        //存储当前创建人和修改人
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
-        //Todo 可能会有问题
-        //释放线程变量
-        BaseContext.removeCurrentId();
+//        //存储当前创建人和修改人
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
+//        //Todo 可能会有问题
+//        //释放线程变量
+//        BaseContext.removeCurrentId();
         //调用employeeMapper
         employeeMapper.insert(employee);
 
@@ -126,8 +126,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = Employee.builder()
                 .status(status)
                 .id(id)
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
         employeeMapper.update(employee);
 
@@ -159,8 +159,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .name(employeeDTO.getName())
                 .phone(employeeDTO.getPhone())
                 .idNumber(employeeDTO.getIdNumber())
-                .updateTime(LocalDateTime.now())
-                .updateUser(BaseContext.getCurrentId())
+//                .updateTime(LocalDateTime.now())
+//                .updateUser(BaseContext.getCurrentId())
                 .build();
 
         employeeMapper.update(employee);
