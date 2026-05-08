@@ -1,0 +1,117 @@
+package com.sky.service.impl;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.sky.constant.StatusConstant;
+import com.sky.dto.DishDTO;
+import com.sky.dto.DishPageQueryDTO;
+import com.sky.entity.Dish;
+import com.sky.entity.DishFlavor;
+import com.sky.mapper.DishFlavorMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.result.PageResult;
+import com.sky.service.DishService;
+import com.sky.vo.DishVO;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+
+@Transactional
+@Service
+public class DishServiceImpl implements DishService {
+
+    @Autowired
+    private DishMapper dishMapper;
+
+    @Autowired
+    private DishFlavorMapper dishFlavorMapper;
+    @Override
+    public void addDish(DishDTO dishDTO) {
+        //拷贝 数据
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dish.setStatus(StatusConstant.ENABLE);//默认起售
+        //插入菜品数据
+        dishMapper.insertDish(dish);
+
+        //获取生成的菜品id
+        Long dishId = dish.getId();
+
+        List<DishFlavor> dishFlavorList = dishDTO.getFlavors();
+        if (!CollectionUtils.isEmpty(dishFlavorList)){
+            for (DishFlavor dishFlavor : dishFlavorList) {
+                dishFlavor.setDishId(dishId);
+            }
+            dishFlavorMapper.insertDishFlavor(dishFlavorList);
+
+        }
+    }
+
+    /**
+     * 菜品分页查询
+     * @param dishPageQueryDTO
+     * @return
+     */
+    @Override
+    public PageResult pageQuery(DishPageQueryDTO dishPageQueryDTO) {
+        PageHelper.startPage(dishPageQueryDTO.getPage(), dishPageQueryDTO.getPageSize());
+
+        Page<Dish> page = dishMapper.pageQuery(dishPageQueryDTO);
+        return new PageResult(page.getTotal(), page.getResult());
+
+    }
+
+    /**
+     * 起售停售
+     * @param status
+     * @param id
+     */
+    @Override
+    public void startOrStop(Integer status, Long id) {
+
+        Dish dish = Dish.builder()
+                .id(id)
+                .status(status)
+                .build();
+
+        dishMapper.update(dish);
+
+    }
+
+    /**
+     * 根据id查询菜品和对应的口味数据
+     * @param id
+     * @return
+     */
+    @Override
+    public DishVO searchById(Long id) {
+        //查询菜品数据
+        DishVO dishVO = dishMapper.searchById(id);
+
+        //查询口味数据
+        List<DishFlavor> dishFlavors = dishFlavorMapper.getByDishId(id);
+        dishVO.setFlavors(dishFlavors);
+
+        return dishVO;
+    }
+
+    /**
+     * 修改菜品
+     * @param dishDTO
+     */
+    @Override
+    public void update(DishDTO dishDTO) {
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO, dish);
+        dishMapper.update(dish);
+
+        //TOdo 删除当前菜品对应的口味数据
+        //dishFlavorMapper.deleteByDishId(dishDTO.getId());
+    }
+
+
+}
