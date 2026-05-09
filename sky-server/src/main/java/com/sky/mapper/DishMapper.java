@@ -38,7 +38,7 @@ public interface DishMapper {
      * @param dishPageQueryDTO
      * @return
      */
-    Page<Dish> pageQuery(DishPageQueryDTO dishPageQueryDTO);
+    Page<DishVO> pageQuery(DishPageQueryDTO dishPageQueryDTO);
 
     /**
      * 修改菜品数据
@@ -55,4 +55,13 @@ public interface DishMapper {
      */
     @Select("select * from dish where id = #{id}")
     DishVO searchById(Long id);
+
+    @Select("select * from dish where category_id = #{categoryId}")
+    List<DishVO> queryByCategoryId(Long categoryId);
+
+    /**
+     * 批量删除菜品
+     * @param ids
+     */
+    void deleteByIds(List<Long> ids);
 }

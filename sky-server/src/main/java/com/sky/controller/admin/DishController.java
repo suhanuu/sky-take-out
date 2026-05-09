@@ -9,8 +9,12 @@ import com.sky.vo.DishVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -91,4 +95,31 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     * 查询指定分类下的菜品
+     * @param categoryId
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation("查询指定分类下的菜品")
+    public Result<List<DishVO>> queryByCategoryId(Long categoryId)
+    {
+        log.info("查询分类id{}",categoryId);
+        List<DishVO> dishVO = dishService.queryByCategoryId(categoryId);
+        return Result.success(dishVO);
+    }
+
+    /**
+     * 批量删除菜品
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    @ApiOperation("批量删除菜品")
+    public Result deleteByIds(@RequestParam("ids") List<Long> ids)
+    {
+        log.info("删除id{}",ids);
+        dishService.deleteByIds(ids);
+        return Result.success();
+    }
 }
