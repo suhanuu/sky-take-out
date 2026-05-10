@@ -31,4 +31,13 @@
         </where>
         order by sort
     </select>
+<!--    跟据类型查询分类-->
+    <select id="getByType" resultType="com.sky.entity.Category">
+        select * from category
+        <where>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
 </mapper>

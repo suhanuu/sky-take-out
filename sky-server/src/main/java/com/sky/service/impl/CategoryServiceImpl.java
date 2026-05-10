@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -94,7 +95,7 @@ public class CategoryServiceImpl implements CategoryService {
      * @return
      */
     @Override
-    public Category[] getByType(Integer type) {
+    public List<Category> getByType(Integer type) {
 
         return categoryMapper.getByType(type);
     }
