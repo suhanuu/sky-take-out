@@ -39,5 +39,14 @@
         </where>
         order by dish.create_time desc
     </select>
+<!--    跟据分类id查询菜品-->
+    <select id="getDishById" resultType="com.sky.vo.DishVO">
+   select  * from dish
+   <where>
+       <if test="categoryId!= null">and category_id = #{categoryId}</if>
+       <if test="status != null">and status = #{status}</if>
+   </where>
+
+    </select>
 
 </mapper>

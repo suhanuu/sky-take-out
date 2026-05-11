@@ -17,12 +17,14 @@ import com.sky.service.DishService;
 import com.sky.vo.DishVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class DishServiceImpl implements DishService {
@@ -35,6 +37,11 @@ public class DishServiceImpl implements DishService {
 
     @Autowired
     private SetmealDishMapper setmealDishMapper;
+
+    /**
+     * 新增菜品
+     * @param dishDTO
+     */
     @Override
     public void addDish(DishDTO dishDTO) {
         //拷贝 数据
@@ -43,10 +50,8 @@ public class DishServiceImpl implements DishService {
         dish.setStatus(StatusConstant.ENABLE);//默认起售
         //插入菜品数据
         dishMapper.insertDish(dish);
-
         //获取生成的菜品id
         Long dishId = dish.getId();
-
         List<DishFlavor> dishFlavorList = dishDTO.getFlavors();
         if (!CollectionUtils.isEmpty(dishFlavorList)){
             for (DishFlavor dishFlavor : dishFlavorList) {
@@ -55,6 +60,8 @@ public class DishServiceImpl implements DishService {
             dishFlavorMapper.insertDishFlavor(dishFlavorList);
 
         }
+
+
     }
 
     /**
@@ -85,6 +92,8 @@ public class DishServiceImpl implements DishService {
                 .build();
 
         dishMapper.update(dish);
+
+
 
     }
 
@@ -176,7 +185,7 @@ public class DishServiceImpl implements DishService {
      */
     @Override
     public List<DishVO> listWithFlavor(Dish dish) {
-        List<DishVO> dishList = dishMapper.queryByCategoryId(dish.getCategoryId());
+        List<DishVO> dishList = dishMapper.getDishById( dish);
 
 //        List<DishVO> dishVOList = new ArrayList<>();
 

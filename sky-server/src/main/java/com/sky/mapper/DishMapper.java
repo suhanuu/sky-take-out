@@ -56,6 +56,12 @@ public interface DishMapper {
     @Select("select * from dish where id = #{id}")
     DishVO searchById(Long id);
 
+    /**
+     * 跟据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+
     @Select("select * from dish where category_id = #{categoryId}")
     List<DishVO> queryByCategoryId(Long categoryId);
 
@@ -64,4 +70,11 @@ public interface DishMapper {
      * @param ids
      */
     void deleteByIds(List<Long> ids);
+
+    /**
+     * 跟据分类id查询菜品
+     * @param dish
+     * @return
+     */
+    List<DishVO> getDishById(Dish dish);
 }

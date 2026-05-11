@@ -1,6 +1,7 @@
 package com.sky.controller.user;
 
 
+import com.sky.constant.StatusConstant;
 import com.sky.entity.Setmeal;
 import com.sky.result.Result;
 import com.sky.service.SetmealService;
@@ -11,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +36,10 @@ public class SetmealController {
      */
     @GetMapping("/list")
     @ApiOperation("根据分类id查询套餐")
+    @Cacheable(cacheNames = "setmealCache",key = "#setmeal.categoryId")
     public Result<List<SetmealVO>> list(Setmeal setmeal) {
         log.info("查询分类id{}", setmeal.getCategoryId());
+        setmeal.setStatus(StatusConstant.ENABLE);
         List<SetmealVO> setmealVOList = setmealService.getCategoryById(setmeal);
         return Result.success(setmealVOList);
     }
