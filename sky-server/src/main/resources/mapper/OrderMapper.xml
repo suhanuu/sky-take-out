@@ -9,4 +9,73 @@
         values
             ( #{number}, #{status}, #{userId}, #{addressBookId}, #{orderTime}, #{checkoutTime}, #{payMethod}, #{payStatus}, #{amount}, #{remark}, #{userName}, #{phone}, #{address}, #{consignee}, #{cancelReason}, #{rejectionReason}, #{cancelTime}, #{estimatedDeliveryTime}, #{deliveryStatus}, #{deliveryTime}, #{packAmount}, #{tablewareNumber}, #{tablewareStatus})
     </insert>
+<!--    修改订单-->
+    <update id="update">
+        update orders
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="cancelReason != null">
+                cancel_reason = #{cancelReason},
+            </if>
+            <if test="cancelTime != null">
+                cancel_time = #{cancelTime},
+            </if>
+            <if test = "payStatus != null">
+                pay_status = #{payStatus},
+            </if>
+            <if test="checkoutTime != null">
+                checkout_time = #{checkoutTime},
+
+            </if>
+            <if test="rejectionReason != null">
+                rejection_reason = #{rejectionReason},
+            </if>
+            <if test="deliveryTime != null">
+                delivery_time = #{deliveryTime},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName},
+            </if>
+        </set>
+        where id = #{id}
+
+    </update>
+    <!--    历史订单分页查询-->
+    <select id="pageQuery" resultType="com.sky.entity.Orders">
+        select * from orders
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+        order by order_time desc
+    </select>
+<!--    跟据订单号查询订单-->
+    <select id="getByNumber" resultType="com.sky.entity.Orders">
+        select * from orders where number = #{orderNumber}
+    </select>
+<!--    服务端订单搜索-->
+    <select id="conditionSearch" resultType="com.sky.entity.Orders">
+            select  * from orders
+            <where>
+                <if test="status != null">
+                    and status = #{status}
+                </if>
+                <if test="number != null">
+                    and number like concat('%',#{number},'%')
+                </if>
+                <if test="phone != null">
+                    and phone like concat('%',#{phone},'%')
+                </if>
+                <if test="beginTime != null and endTime != null">
+                    and order_time between #{beginTime} and #{endTime}
+                </if>
+            </where> order by order_time desc
+            </select>
+
 </mapper>

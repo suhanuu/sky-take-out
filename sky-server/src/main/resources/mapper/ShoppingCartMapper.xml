@@ -2,7 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.sky.mapper.ShoppingCartMapper">
-<!--    更新菜品数量信息-->
+<!--    批量插入菜品和套餐数据-->
+    <insert id="insertBatch">
+        insert into shopping_cart (user_id, dish_id, setmeal_id, dish_flavor, name, image, amount, create_time) values
+        <foreach collection="shoppingCartList" item="shoppingCart" separator=",">
+            (#{shoppingCart.userId}, #{shoppingCart.dishId}, #{shoppingCart.setmealId}, #{shoppingCart.dishFlavor}, #{shoppingCart.name}, #{shoppingCart.image}, #{shoppingCart.amount}, #{shoppingCart.createTime})
+        </foreach>
+    </insert>
+    <!--    更新菜品数量信息-->
     <update id="update">
         update shopping_cart
         <set>

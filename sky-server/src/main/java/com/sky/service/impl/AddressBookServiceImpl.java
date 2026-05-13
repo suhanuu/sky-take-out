@@ -71,7 +71,8 @@ public class AddressBookServiceImpl implements AddressBookService {
      */
     @Override
     public void updateAddressBook(AddressBook addressBook) {
-       addressBookMapper.update(addressBook);
+
+        addressBookMapper.update(addressBook);
     }
 
     /**

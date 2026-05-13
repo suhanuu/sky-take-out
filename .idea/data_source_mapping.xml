@@ -6,6 +6,8 @@
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/DishFlavorMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/DishMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/EmployeeMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/OrderDetailMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
+    <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/OrderMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/SetmealDishMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/SetmealMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
     <file url="file://$PROJECT_DIR$/sky-server/src/main/java/com/sky/mapper/ShoppingCartMapper.java" value="b8d2afcc-726e-48d9-ae32-db9602ed81ed" />
