@@ -1,5 +1,6 @@
 package com.sky.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.sky.constant.MessageConstant;
@@ -15,18 +16,18 @@ import com.sky.mapper.*;
 import com.sky.result.PageResult;
 import com.sky.service.OrderService;
 import com.sky.service.ShoppingCartService;
+import com.sky.utils.BaiduMapUtil;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
+import com.sky.websocket.WebSocketServer;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -40,6 +41,10 @@ public class OrderServiceImpl implements OrderService {
     private OrderDetailMapper orderDetailMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private BaiduMapUtil baiduMapUtil;
+    @Autowired
+    private WebSocketServer webSocketServer;
 
     /**
      * 用户下单
@@ -64,6 +69,15 @@ public class OrderServiceImpl implements OrderService {
             //购物车为空
             throw new AddressBookBusinessException(MessageConstant.SHOPPING_CART_IS_NULL);
         }
+
+//        //todo 验证订单商家与用户距离
+//        String userAddress = addressBook.getProvinceName() + addressBook.getCityName() +
+//                addressBook.getDistrictName() + addressBook.getDetail();
+//
+//        boolean inRange = baiduMapUtil.validateDeliveryRange(userAddress);
+//        if (!inRange) {
+//            throw new OrderBusinessException(MessageConstant.DELIVERY_OUT_OF_RANGE);
+//        }
         //2、添加订单数据
         Orders orders = new Orders();
         BeanUtils.copyProperties(ordersSubmitDTO, orders);
@@ -226,6 +240,15 @@ public class OrderServiceImpl implements OrderService {
         //5、修改订单数据
         orderMapper.update(orders);
 
+        //6、todo 提醒商家接单，这个本来应该设置在微信支付成功回调中，但因为我是个人，无法支付
+        Map<String, Object> map = new HashMap<>();
+        map.put("type", 1); // 1表示来单提醒，2表示催单提醒
+        map.put("orderId", orders.getId());
+        map.put("content", "订单号:" + orders.getNumber());
+        String json = JSON.toJSONString(map);
+        webSocketServer.sendToAllClient(json);
+
+
     }
 
     /**
@@ -252,9 +275,27 @@ public class OrderServiceImpl implements OrderService {
         PageHelper.startPage(ordersPageQueryDTO.getPage(), ordersPageQueryDTO.getPageSize());
 
         Page<Orders> page = orderMapper.conditionSearch(ordersPageQueryDTO);
-        return new PageResult(page.getTotal(), page.getResult());
+        List<OrderVO> orderVOList = new ArrayList<>();
+        for (Orders orders : page.getResult()) {
+            OrderVO orderVO = new OrderVO();
+            BeanUtils.copyProperties(orders, orderVO);
+            //获取订单菜品信息
+            List<OrderDetail> orderDetailList = orderDetailMapper.getByOrderId(orders.getId());
+            //将菜品信息封装到orderVO中
+            if (orderDetailList != null && !orderDetailList.isEmpty()) {
+                String orderDishes = orderDetailList.stream()
+                        .map(detail -> detail.getName() + "x" + detail.getNumber())
+                        .reduce((a, b) -> a + "," + b)
+                        .orElse("");
+                orderVO.setOrderDishes(orderDishes);
+            }
+
+            orderVOList.add(orderVO);
+        }
+        return new PageResult(page.getTotal(), orderVOList);
 
     }
+
 
     /**
      * 接单

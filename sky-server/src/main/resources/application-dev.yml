@@ -19,4 +19,6 @@ sky:
   wechat:
     appid: wxa815d1b74d02449a
     secret: bfeaa1b1f20a5ac53e60804e713c6b97
-
+  baidu:
+    ak: fymdejeuNVqwRM03lQwpanArneNABWFL
+    shop-address: 北京市朝阳区建国路93号
