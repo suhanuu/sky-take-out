@@ -77,4 +77,12 @@ public interface DishMapper {
      * @return
      */
     List<DishVO> getDishById(Dish dish);
+
+    /**
+     * 菜品总览
+     * @param status
+     * @return
+     */
+    @Select("select count(id) from dish where status = #{status}")
+    Integer getDishCountByStatus(Integer status);
 }
