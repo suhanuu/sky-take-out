@@ -395,4 +395,4 @@ sky-server/src/main/resources/
 
 ---
 
-*文档生成日期：2026-07-01*
+日期：2026年7月1日
